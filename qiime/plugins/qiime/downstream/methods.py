@@ -36,9 +36,14 @@ def dm_from_env(sample_metadata: SampleMetadata, column: String) -> DistanceMatr
         ids=sample_metadata.index, metric='euclidean')
 
 # TODO add `lookup` support
+x_help = ("the first distance matrix")
+y_help = ("the second distance matrix")
 @qiime.register_method("Mantel test")
-def mantel(x: DistanceMatrix, y: DistanceMatrix,
-           method: ChooseOne(String, ['pearson', 'spearman']) = 'pearson',
+def mantel(x: DistanceMatrix(x_help),
+           y: DistanceMatrix(y_help),
+           method: ChooseOne("the method to use for computing correlation",
+                             String,
+                             ['pearson', 'spearman']) = 'pearson',
            permutations: Range(Integer, 0, None) = 999,
            alternative: ChooseOne(String, ['two-sided', 'greater', 'less']) = 'two-sided',
            strict: Boolean = True) -> (Range(Decimal, -1, 1),
