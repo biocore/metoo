@@ -3,8 +3,8 @@ import skbio.diversity.beta
 import numpy as np
 from scipy.stats import pearsonr, spearmanr
 
-from framework.types.parameterized import ChooseOne, List, Range
-from framework.types.primitives import Boolean, Decimal, Integer, String
+from qiime.types.parameterized import ChooseOne, List, Range
+from qiime.types.primitives import Boolean, Decimal, Integer, String
 from . import qiime
 from .types import (
     DistanceMatrix, OrdinationResults, SampleMetadata, PairwiseMantelResults,
@@ -36,9 +36,14 @@ def dm_from_env(sample_metadata: SampleMetadata, column: String) -> DistanceMatr
         ids=sample_metadata.index, metric='euclidean')
 
 # TODO add `lookup` support
+x_help = ("the first distance matrix")
+y_help = ("the second distance matrix")
 @qiime.register_method("Mantel test")
-def mantel(x: DistanceMatrix, y: DistanceMatrix,
-           method: ChooseOne(String, ['pearson', 'spearman']) = 'pearson',
+def mantel(x: DistanceMatrix(x_help),
+           y: DistanceMatrix(y_help),
+           method: ChooseOne("the method to use for computing correlation",
+                             String,
+                             ['pearson', 'spearman']) = 'pearson',
            permutations: Range(Integer, 0, None) = 999,
            alternative: ChooseOne(String, ['two-sided', 'greater', 'less']) = 'two-sided',
            strict: Boolean = True) -> (Range(Decimal, -1, 1),
